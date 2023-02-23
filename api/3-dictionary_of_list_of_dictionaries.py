@@ -1,23 +1,22 @@
 #!/usr/bin/python3
-"""
-    python script that exports data in the JSON format
-"""
+""" get data from csv """
+
+import csv
 import json
 import requests
-
+import sys
 if __name__ == "__main__":
-    url = "https://jsonplaceholder.typicode.com/"
-    users = requests.get(url + "users").json()
-    """
-        export to JSON
-    """
-
-    with open("todo_all_employees.json", "w") as jsonfile:
-        json.dump({
-            u.get("id"): [{
-                "task": t.get("title"),
-                "completed": t.get("completed"),
-                "username": u.get("username")
-            } for t in requests.get(url + "todos",
-                                    params={"userId": u.get("id")}).json()]
-            for u in users}, jsonfile)
+    def getTodos(id):
+        link = "https://jsonplaceholder.typicode.com/users/{}/todos".format(id)
+        res = requests.get(link)
+        return json.loads(res.text)
+    link = "https://jsonplaceholder.typicode.com/users/"
+    res = requests.get(link)
+    users = json.loads(res.text)
+    data = {}
+    for i in users:
+        todos = getTodos(i["id"])
+        data[i["id"]] = [{"task": j["title"], "completed": j["completed"],
+                          "username": i["username"]} for j in todos]
+    with open("todo_all_employees.json", 'w', encoding='utf-8') as f:
+        f.write(json.dumps(data))
