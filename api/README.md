@@ -1,2 +1,1 @@
-Readme file for this project
-Alu back end
+Readme file for api directory
