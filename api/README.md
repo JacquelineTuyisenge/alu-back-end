@@ -1,1 +1,2 @@
-Readme file for api directory
+readme file for this directory
+api
